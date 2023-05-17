@@ -1,0 +1,48 @@
+-- SQL to split full names into first and last name collumns
+-- MySQL
+SELECT 
+	a.first_name,
+    a.last_name,
+    CONCAT(a.first_name, ' ',a.last_name) AS full_name,
+	REVERSE(CONCAT(a.first_name, ' ',a.last_name)),
+	   CASE
+           WHEN LOCATE(' ', CONCAT(a.first_name, ' ',a.last_name)) > 0
+           THEN SUBSTRING(CONCAT(a.first_name, ' ',a.last_name), 1, LOCATE(' ', CONCAT(a.first_name, ' ',a.last_name)) - 1)
+           ELSE ''
+       END AS FirstName,
+       CASE
+           WHEN LOCATE(' ', CONCAT(a.first_name, ' ',a.last_name)) > 0
+           THEN SUBSTRING(CONCAT(a.first_name, ' ',a.last_name), 1, LENGTH(CONCAT(a.first_name, ' ',a.last_name)) - LOCATE(' ', REVERSE(CONCAT(a.first_name, ' ',a.last_name))))
+           ELSE ''
+       END AS FullNameWithoutLastName,
+       CASE
+           WHEN LOCATE(' ', CONCAT(a.first_name, ' ',a.last_name)) > 0
+           THEN REVERSE(SUBSTRING(REVERSE(CONCAT(a.first_name, ' ',a.last_name)), 
+                       1, 
+                       LOCATE(' ', REVERSE(CONCAT(a.first_name, ' ',a.last_name))) - 1))
+           ELSE (CONCAT(a.first_name, ' ',a.last_name))
+       END AS LastName
+FROM sakila.actor a;
+
+-- SQL Server
+--SELECT TOP 10
+--	a.NmFuncionario,
+--	REVERSE(a.NmFuncionario),
+--	   CASE
+--           WHEN CHARINDEX(' ', a.NmFuncionario) > 0
+--           THEN SUBSTRING(a.NmFuncionario, 1, CHARINDEX(' ', a.NmFuncionario) - 1)
+--           ELSE ''
+--       END AS FirstName,
+--       CASE
+--           WHEN CHARINDEX(' ', a.NmFuncionario) > 0
+--           THEN SUBSTRING(a.NmFuncionario, 1, LEN(a.NmFuncionario) - CHARINDEX(' ', REVERSE(a.NmFuncionario)))
+--           ELSE ''
+--       END AS FullNameWithoutLastName,
+--       CASE
+--           WHEN CHARINDEX(' ', a.NmFuncionario) > 0
+--           THEN REVERSE(SUBSTRING(REVERSE(a.NmFuncionario), 
+--                       1, 
+--                       CHARINDEX(' ', REVERSE(a.NmFuncionario)) - 1))
+--           ELSE a.NmFuncionario
+--       END AS LastName
+--FROM TB_FUNCIONARIO AS a
